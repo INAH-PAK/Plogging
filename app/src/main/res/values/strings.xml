@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Plogging</string>
+    <string name="app_logo_image">app logo image</string>
 </resources>
