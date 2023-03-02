@@ -67,4 +67,7 @@ dependencies {
 
     // Naver Map
     implementation("com.naver.maps:map-sdk:3.16.2")
+
+    // Google FusedLocationSource - 반드시 16.0.0 버전이여야 Naver Map 호환.
+    implementation("com.google.android.gms:play-services-location:16.0.0")
 }
