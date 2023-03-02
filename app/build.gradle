@@ -20,6 +20,7 @@ android {
         versionName "1.0"
 
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["google_client_id"]
+        buildConfigField "String", "NAVER_CLIENT_ID", properties["naver_client_id"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,4 +64,7 @@ dependencies {
     // JetPack - Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+
+    // Naver Map
+    implementation("com.naver.maps:map-sdk:3.16.2")
 }
