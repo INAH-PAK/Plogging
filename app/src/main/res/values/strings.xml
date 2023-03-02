@@ -6,4 +6,11 @@
     <string name="calender">Calender</string>
     <string name="tracking">Tracking</string>
     <string name="setting">Setting</string>
+    <string name="start_plogging_together">함께 플로깅 하기</string>
+    <string name="in_progress">진행중인 플로깅</string>
+    <string name="my_location">내 위치</string>
+    <string name="restroom">화장실</string>
+    <string name="tracking_noti_1">다른 사람과 함께하고 싶다면?</string>
+    <string name="tracking_noti_2">진행중 마커를 길게 눌러보세요</string>
+    <string name="start_plogging_alone">혼자 플로깅 하기</string>
 </resources>
