@@ -1,6 +1,7 @@
 package com.example.plogging.data.model
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
@@ -21,8 +22,8 @@ data class KakaoApiResponse(
     val phone: String,
     val address_name: String,
     val road_address_name: String,
-    val x: String,    //X 좌표값, 경위도인 경우 longitude (경도)
-    val y: String,    //Y 좌표값, 경위도인 경우 latitude(위도)
+    @Json(name = "x") val longitude: String,    //X 좌표값, 경위도인 경우 longitude (경도)
+    @Json(name = "y") val latitude: String,    //Y 좌표값, 경위도인 경우 latitude(위도)
     val place_url: String,
     val distance: String
 ) : Parcelable

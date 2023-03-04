@@ -28,7 +28,7 @@ class TrackingViewModel(val repository: TrackingRepository) : ViewModel() {
             ).map { result ->
                 result.documents.map {
                     Marker().apply {
-                        this.position = LatLng(it.y.toDouble(), it.x.toDouble())
+                        this.position = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
                         this.captionText = it.place_name
                     }
                 }
