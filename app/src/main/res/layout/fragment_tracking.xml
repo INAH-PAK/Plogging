@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewmodel"
+            type="com.example.plogging.ui.tracking.TrackingViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,6 +40,7 @@
                 android:id="@+id/chip_toilet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{()->viewmodel.onClickChipRestroom()}"
                 android:text="@string/restroom" />
         </com.google.android.material.chip.ChipGroup>
 

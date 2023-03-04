@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id("androidx.navigation.safeargs.kotlin")
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
 }
 
 Properties properties = new Properties()
@@ -21,6 +23,7 @@ android {
 
         buildConfigField "String", "GOOGLE_CLIENT_ID", properties["google_client_id"]
         buildConfigField "String", "NAVER_CLIENT_ID", properties["naver_client_id"]
+        buildConfigField "String", "KAKAO_REST_API_KEY", properties["kakao_rest_api_key"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -70,4 +73,13 @@ dependencies {
 
     // Google FusedLocationSource - 반드시 16.0.0 버전이여야 Naver Map 호환.
     implementation("com.google.android.gms:play-services-location:16.0.0")
+
+    // Network
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
+    implementation platform('com.squareup.okhttp3:okhttp-bom:4.10.0')
+    implementation 'com.squareup.okhttp3:okhttp'
+    implementation 'com.squareup.okhttp3:logging-interceptor'
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.1")
 }
