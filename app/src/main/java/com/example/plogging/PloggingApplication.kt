@@ -9,7 +9,7 @@ class PloggingApplication : Application() {
         super.onCreate()
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(BuildConfig.NAVER_CLIENT_ID)
-        appContainer = AppContainer()
+        appContainer = AppContainer(this)
     }
 
     companion object {
