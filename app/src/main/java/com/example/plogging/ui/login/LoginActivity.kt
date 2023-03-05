@@ -1,4 +1,4 @@
-package com.example.plogging.ui
+package com.example.plogging.ui.login
 
 import android.content.ContentValues
 import android.content.Intent
@@ -9,10 +9,14 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.plogging.BuildConfig
+import com.example.plogging.PloggingApplication
 import com.example.plogging.R
 import com.example.plogging.databinding.ActivityLoginBinding
-import com.example.plogging.util.Constants
+import com.example.plogging.ui.MainActivity
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -25,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -36,23 +41,54 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var legacyLoginIntent: Intent
     private val firebaseAuth: FirebaseAuth by lazy { Firebase.auth }
 
-    private val successIntent: (userId: String, userToken: String) -> Unit = { id, token ->
-        Log.i("User Info ::: ", " id : $id , token :  $token")
-        startActivity(Intent(this, MainActivity::class.java).apply {
-            putExtra(Constants.USER_ID, id)
-            putExtra(Constants.USER_TOKEN, token)
-        })
+    private val preferenceDataStore by lazy {
+        PloggingApplication.appContainer.provideDataStorePreferences()
     }
 
+    private val successIntent: (userToken: String, userName: String, userPhotoUrl: String, userEmail: String) -> Unit =
+        { token, name, photo, email ->
+            lifecycleScope.launch {
+                preferenceDataStore.setUserInfo(
+                    token, name, photo, email
+                )
+            }
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        setupSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setGoogleLoginClient()
-        setLayout()
+        lifecycleScope.launchWhenCreated {
+            setGoogleLoginClient()
+            setLayout()
+        }
     }
+
+    private fun setupSplashScreen() {
+        var keepSplashScreenOn = true
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                preferenceDataStore.isLogin.collect {
+                    when (it) {
+                        true -> {
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            finish()
+                        }
+                        false -> {
+                            keepSplashScreenOn = false
+                        }
+                    }
+                }
+            }
+        }
+        installSplashScreen().setKeepOnScreenCondition {
+            keepSplashScreenOn
+        }
+    }
+
 
     private fun setLayout() {
         binding.btnGoogleLogin.setOnClickListener { googleLogin() }
@@ -139,9 +175,13 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val userName =
-                        firebaseAuth.currentUser?.displayName ?: "UNKNOWN"
-                    successIntent(userName, idToken)
+                    successIntent(
+                        idToken,
+                        firebaseAuth.currentUser?.displayName ?: "",
+                        firebaseAuth.currentUser?.displayName ?: "",
+                        firebaseAuth.currentUser?.email ?: "",
+                    )
+
                 } else {
                     Log.w(
                         ContentValues.TAG,
@@ -157,10 +197,14 @@ class LoginActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val googleSignInAccount =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data).result
-                val userId = googleSignInAccount.id.toString()
                 val userToken = googleSignInAccount.idToken.toString()
                 registerFirebase(userToken)
-                successIntent(userId, userToken)
+                successIntent(
+                    userToken,
+                    firebaseAuth.currentUser?.displayName ?: "",
+                    firebaseAuth.currentUser?.displayName ?: "",
+                    firebaseAuth.currentUser?.email ?: "",
+                )
             } else {
                 Log.d(ContentValues.TAG, "legacy Login  :::: Fail!")
             }
