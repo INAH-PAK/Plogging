@@ -13,4 +13,8 @@
     <string name="tracking_noti_1">다른 사람과 함께하고 싶다면?</string>
     <string name="tracking_noti_2">진행중 마커를 길게 눌러보세요</string>
     <string name="start_plogging_alone">혼자 플로깅 하기</string>
+    <string name="user_profile_photo">user_profile_photo</string>
+    <string name="my_info">내 정보</string>
+    <string name="auth">계정</string>
+    <string name="logout">로그아웃</string>
 </resources>
