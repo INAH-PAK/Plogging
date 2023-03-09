@@ -41,14 +41,15 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var legacyLoginIntent: Intent
     private val firebaseAuth: FirebaseAuth by lazy { Firebase.auth }
 
-    private val preferenceDataStore by lazy {
-        PloggingApplication.appContainer.provideDataStorePreferences()
+    private val userDataRepository by lazy {
+        PloggingApplication.appContainer.provideUserDataRepository()
     }
 
     private val successIntent: (userToken: String, userName: String, userPhotoUrl: String, userEmail: String) -> Unit =
         { token, name, photo, email ->
+            Log.i("사용자 사진", photo)
             lifecycleScope.launch {
-                preferenceDataStore.setUserInfo(
+                userDataRepository.setUserInfo(
                     token, name, photo, email
                 )
             }
@@ -71,15 +72,14 @@ class LoginActivity : AppCompatActivity() {
         var keepSplashScreenOn = true
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                preferenceDataStore.isLogin.collect {
-                    when (it) {
-                        true -> {
-                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                            finish()
-                        }
-                        false -> {
-                            keepSplashScreenOn = false
-                        }
+                val isLogin = userDataRepository.getUserLoginState()
+                when (isLogin) {
+                    true -> {
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
+                    false -> {
+                        keepSplashScreenOn = false
                     }
                 }
             }
@@ -88,7 +88,6 @@ class LoginActivity : AppCompatActivity() {
             keepSplashScreenOn
         }
     }
-
 
     private fun setLayout() {
         binding.btnGoogleLogin.setOnClickListener { googleLogin() }
@@ -178,7 +177,7 @@ class LoginActivity : AppCompatActivity() {
                     successIntent(
                         idToken,
                         firebaseAuth.currentUser?.displayName ?: "",
-                        firebaseAuth.currentUser?.displayName ?: "",
+                        firebaseAuth.currentUser?.photoUrl?.toString() ?: "",
                         firebaseAuth.currentUser?.email ?: "",
                     )
 
@@ -202,7 +201,7 @@ class LoginActivity : AppCompatActivity() {
                 successIntent(
                     userToken,
                     firebaseAuth.currentUser?.displayName ?: "",
-                    firebaseAuth.currentUser?.displayName ?: "",
+                    firebaseAuth.currentUser?.photoUrl?.toString() ?: "",
                     firebaseAuth.currentUser?.email ?: "",
                 )
             } else {
