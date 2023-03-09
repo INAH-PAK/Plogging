@@ -40,5 +40,14 @@
         <action
             android:id="@+id/action_settingFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_changeUserNameDialog"
+            app:destination="@id/changeUserNameDialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/changeUserNameDialog"
+        android:name="com.example.plogging.ui.dialog.ChangeUserNameDialog"
+        android:label="dialog_change_user_name"
+        tools:layout="@layout/dialog_change_name" />
 </navigation>

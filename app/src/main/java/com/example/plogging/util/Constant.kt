@@ -11,7 +11,6 @@ object Constants {
     const val USER_PREFERENCES_IS_LOGIN = "is_login"
     const val USER_PREFERENCES_NAME = "user_name"
     const val USER_PREFERENCES_TOKEN = "user_token"
-    const val USER_PREFERENCES_PHOTO = "user_photo"
+    const val USER_PREFERENCES_IMAGE = "user_photo"
     const val USER_PREFERENCES_EMAIL = "user_email"
-
 }
