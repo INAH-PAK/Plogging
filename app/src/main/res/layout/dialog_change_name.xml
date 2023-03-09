@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="editText"
+            type="String" />
+
+        <variable
+            name="viewmodel"
+            type="com.example.plogging.ui.setting.SettingViewmodel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:background="@drawable/bg_dialog"
+            android:padding="16dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_setting_info"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:inputType="text"
+                    android:text="@={editText}"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/ic_app_logo_avocado_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{()-> viewmodel.onClickDialogCancel()}"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@id/btn_complete"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_setting_info" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_complete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:onClick="@{()-> viewmodel.onClickDialogComplete(editText)}"
+                android:text="@string/complete"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/ic_app_logo_avocado_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_cancle"
+                app:layout_constraintTop_toBottomOf="@id/til_setting_info" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>
