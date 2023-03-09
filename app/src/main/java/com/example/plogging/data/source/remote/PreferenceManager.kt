@@ -8,9 +8,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.plogging.data.source.remote.PreferenceManager.UserPreferenceKeys.USER_EMAIL
+import com.example.plogging.data.source.remote.PreferenceManager.UserPreferenceKeys.USER_IMAGE
 import com.example.plogging.data.source.remote.PreferenceManager.UserPreferenceKeys.USER_LOGIN_STATE
 import com.example.plogging.data.source.remote.PreferenceManager.UserPreferenceKeys.USER_NAME
-import com.example.plogging.data.source.remote.PreferenceManager.UserPreferenceKeys.USER_PHOTO
 import com.example.plogging.data.source.remote.PreferenceManager.UserPreferenceKeys.USER_TOKEN
 import com.example.plogging.util.Constants
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +24,7 @@ class PreferenceManager(private val context: Context) {
         val USER_LOGIN_STATE = booleanPreferencesKey(Constants.USER_PREFERENCES_IS_LOGIN)
         val USER_NAME = stringPreferencesKey(Constants.USER_PREFERENCES_NAME)
         val USER_TOKEN = stringPreferencesKey(Constants.USER_PREFERENCES_TOKEN)
-        val USER_PHOTO = stringPreferencesKey(Constants.USER_PREFERENCES_PHOTO)
+        val USER_IMAGE = stringPreferencesKey(Constants.USER_PREFERENCES_IMAGE)
         val USER_EMAIL = stringPreferencesKey(Constants.USER_PREFERENCES_EMAIL)
     }
 
@@ -35,7 +35,7 @@ class PreferenceManager(private val context: Context) {
         it[USER_TOKEN] ?: ""
     }
     val userPhotoFlow: Flow<String> = context.dataStore.data.map {
-        it[USER_PHOTO] ?: ""
+        it[USER_IMAGE] ?: ""
     }
     val userEmailFlow: Flow<String> = context.dataStore.data.map {
         it[USER_EMAIL] ?: ""
@@ -48,39 +48,27 @@ class PreferenceManager(private val context: Context) {
     suspend fun setUserInfo(
         token: String,
         name: String,
-        photo: String,
+        image: String,
         email: String,
     ) {
         context.dataStore.edit { preferences ->
             preferences[USER_TOKEN] = token
             preferences[USER_NAME] = name
-            preferences[USER_PHOTO] = photo
+            preferences[USER_IMAGE] = image
             preferences[USER_EMAIL] = email
             preferences[USER_LOGIN_STATE] = true
         }
     }
 
-    suspend fun editUserName(name: String) {
+    suspend fun editUserName(changedName: String) {
         context.dataStore.edit {
-            it[USER_NAME] = name
+            it[USER_NAME] = changedName
         }
     }
 
-    suspend fun editUserToken(token: String) {
+    suspend fun editUserImage(image: String) {
         context.dataStore.edit {
-            it[USER_TOKEN] = token
-        }
-    }
-
-    suspend fun editUserPhoto(photo: String) {
-        context.dataStore.edit {
-            it[USER_PHOTO] = photo
-        }
-    }
-
-    suspend fun editUserEmail(email: String) {
-        context.dataStore.edit {
-            it[USER_EMAIL] = email
+            it[USER_IMAGE] = image
         }
     }
 
