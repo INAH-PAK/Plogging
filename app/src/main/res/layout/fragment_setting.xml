@@ -1,16 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.setting.SettingFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.example.plogging.ui.setting.SettingViewmodel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="100sp"
-        tools:text="설정 화면"  />
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        tools:context=".ui.setting.SettingFragment">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_setting_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/my_info"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_title"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_setting_profile" />
+
+        <ImageView
+            android:id="@+id/iv_setting_profile"
+            displayImageRound="@{viewmodel.photo}"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="36dp"
+            android:clickable="true"
+            android:contentDescription="@string/user_profile_photo"
+            android:focusable="true"
+            android:onClick="@{()->viewmodel.onclickUserProfileImage()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_title"
+            tools:src="@drawable/ic_user_empty_profile_24" />
+
+        <TextView
+            android:id="@+id/tv_setting_nick_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{()->viewmodel.onClickUserProfileName()}"
+            android:text="@{viewmodel.name}"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@id/iv_setting_profile"
+            app:layout_constraintTop_toTopOf="@id/iv_setting_profile"
+            tools:text="박인아" />
+
+        <TextView
+            android:id="@+id/tv_auth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/auth"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_setting_profile" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_auth"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_auth" />
+
+        <TextView
+            android:id="@+id/tv_setting_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{viewmodel.email}"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_auth"
+            tools:text="이메일" />
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:onClick="@{()->viewmodel.logout()}"
+            android:text="@string/logout"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_setting_email" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

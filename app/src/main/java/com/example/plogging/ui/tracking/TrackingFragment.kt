@@ -18,11 +18,7 @@ import com.example.plogging.data.model.RestRoomMarkersUiState
 import com.example.plogging.data.source.TrackingRepository
 import com.example.plogging.databinding.FragmentTrackingBinding
 import com.google.android.material.snackbar.Snackbar
-import com.naver.maps.map.LocationSource
-import com.naver.maps.map.LocationTrackingMode
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.coroutines.launch
@@ -56,7 +52,6 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // 화장실 버튼 클릭시, 마커 데이터 가져오기.
                 viewmodel.uiState.collect { uiState ->
                     when (uiState) {
                         is RestRoomMarkersUiState.Success<List<Marker>> -> {
@@ -81,15 +76,13 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
         binding.viewmodel = viewmodel
         binding.lifecycleOwner = viewLifecycleOwner
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+        
         val mapFragment = childFragmentManager.findFragmentById(R.id.naver_map) as MapFragment
-            ?: MapFragment.newInstance().also {
-                childFragmentManager.beginTransaction().add(R.id.naver_map, it).commit()
-            }
         mapFragment.getMapAsync(this)
         requestPermission.launch(fusedLocationPermission)
     }
 
-    val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         when (it) {
             true -> {
                 Log.i(" 권한 요청 허용", " 권한 요청 허용")
