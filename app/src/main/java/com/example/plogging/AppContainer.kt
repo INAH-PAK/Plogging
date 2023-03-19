@@ -8,7 +8,8 @@ import com.example.plogging.data.source.remote.PreferenceManager
 
 class AppContainer(private val application: Application) {
 
-    private var apiClient: ApiClient? = null
+    private var kakaoApiClient: ApiClient? = null
+    private var firebaseApiClient: ApiClient? = null
     private var dataStore: PreferenceManager? = null
     private var userDataRepository: UserDataRepository? = null
     private var database: AppDatabase? = null
@@ -17,9 +18,15 @@ class AppContainer(private val application: Application) {
         return AppDatabase.getInstance(application)
     }
 
-    fun provideApiClient(): ApiClient {
-        return apiClient ?: ApiClient.create(BuildConfig.KAKAO_REST_API_KEY).apply {
-            apiClient = this
+    fun provideFirebaseApiClient() : ApiClient {
+        return firebaseApiClient ?: ApiClient.createFirebaseApiClient().apply {
+            firebaseApiClient = this
+        }
+    }
+
+    fun provideKakaoApiClient(): ApiClient {
+        return kakaoApiClient ?: ApiClient.createKakaoApiClient(BuildConfig.KAKAO_REST_API_KEY).apply {
+            kakaoApiClient = this
         }
     }
 

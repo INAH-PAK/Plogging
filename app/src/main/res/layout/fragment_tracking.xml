@@ -89,6 +89,7 @@
             android:text="@string/start_plogging_together"
             android:textColor="@color/white"
             android:textSize="30sp"
+            android:onClick="@{()->viewmodel.postRecode()}"
             app:layout_constraintEnd_toEndOf="@id/tv_notify_1"
             app:layout_constraintStart_toStartOf="@id/tv_notify_1"
             app:layout_constraintTop_toBottomOf="@id/naver_map" />
