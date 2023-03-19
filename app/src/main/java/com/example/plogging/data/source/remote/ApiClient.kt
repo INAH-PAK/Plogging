@@ -23,12 +23,32 @@ interface ApiClient {
 
     companion object {
 
-        private const val BASE_URL = "https://dapi.kakao.com/"
+        private const val BASE_URL_KAKAO = "https://dapi.kakao.com/"
+        private const val BASE_URL_FIREBASE =
+            "https://plogging-1efa6-default-rtdb.asia-southeast1.firebasedatabase.app/"
+
         private val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        fun create(apiKey: String): ApiClient {
+        fun createFirebaseApiClient():ApiClient{
+            val logger = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+
+            val client = OkHttpClient.Builder()
+                .addInterceptor(logger)
+                .build()
+
+            return Retrofit.Builder()
+                .baseUrl(BASE_URL_FIREBASE)
+                .client(client)
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build()
+                .create(ApiClient::class.java)
+        }
+
+        fun createKakaoApiClient(apiKey: String): ApiClient {
             val logger = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
@@ -46,7 +66,7 @@ interface ApiClient {
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL_KAKAO)
                 .client(client)
                 .client(client)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))

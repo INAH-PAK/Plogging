@@ -18,7 +18,7 @@ class AppContainer(private val application: Application) {
     }
 
     fun provideApiClient(): ApiClient {
-        return apiClient ?: ApiClient.create(BuildConfig.KAKAO_REST_API_KEY).apply {
+        return apiClient ?: ApiClient.createKakaoApiClient(BuildConfig.KAKAO_REST_API_KEY).apply {
             apiClient = this
         }
     }
