@@ -5,19 +5,39 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.plogging.data.model.RestRoomMarkersUiState
+import com.example.plogging.data.model.TogetherRecode
+import com.example.plogging.data.model.User
 import com.example.plogging.data.source.TrackingRepository
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TrackingViewModel(val repository: TrackingRepository) : ViewModel() {
+class TrackingViewModel(private val repository: TrackingRepository) : ViewModel() {
 
     private val _restroomItemUiState =
         MutableStateFlow(RestRoomMarkersUiState.Success<List<Marker>>(emptyList()))
 
     // The UI collects from this StateFlow to get its state updates
     val uiState: StateFlow<RestRoomMarkersUiState<List<Marker>>> = _restroomItemUiState
+
+    fun postRecode() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.postTogetherRecodes(
+                "2022-03-19",
+                TogetherRecode(
+                    arrayListOf(
+                        User("사용자 토큰1", "인아", "ㅏㅏㅏ"),
+                        User("사용자 토큰2", "인아2", "ㅏ22"),
+                    ),
+                    ",",
+                    300L,
+                    130L
+                )
+            )
+        }
+    }
 
     fun onClickChipRestroom() {
         viewModelScope.launch {

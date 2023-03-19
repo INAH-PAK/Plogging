@@ -29,7 +29,10 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
     private val viewmodel by viewModels<TrackingViewModel> {
         TrackingViewModel.provideFactory(
-            trackingRepository = TrackingRepository(PloggingApplication.appContainer.provideApiClient())
+            trackingRepository = TrackingRepository(
+                PloggingApplication.appContainer.provideKakaoApiClient(),
+                PloggingApplication.appContainer.provideFirebaseApiClient()
+            )
         )
     }
     private val fusedLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION
@@ -76,23 +79,24 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
         binding.viewmodel = viewmodel
         binding.lifecycleOwner = viewLifecycleOwner
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-        
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.naver_map) as MapFragment
         mapFragment.getMapAsync(this)
         requestPermission.launch(fusedLocationPermission)
     }
 
-    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        when (it) {
-            true -> {
-                Log.i(" 권한 요청 허용", " 권한 요청 허용")
-            }
-            false -> {
-                naverMap.locationTrackingMode = LocationTrackingMode.None
-                Log.i(" 권한 요청 허용", " 권한 요청 거부")
+    private val requestPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            when (it) {
+                true -> {
+                    Log.i(" 권한 요청 허용", " 권한 요청 허용")
+                }
+                false -> {
+                    naverMap.locationTrackingMode = LocationTrackingMode.None
+                    Log.i(" 권한 요청 허용", " 권한 요청 거부")
+                }
             }
         }
-    }
 
     override fun onMapReady(p0: NaverMap) {
         this.naverMap = p0
