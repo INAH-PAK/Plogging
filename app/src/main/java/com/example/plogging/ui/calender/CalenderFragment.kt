@@ -5,14 +5,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.plogging.R
+import androidx.fragment.app.viewModels
+import com.example.plogging.databinding.FragmentCarlenderBinding
 
 class CalenderFragment : Fragment() {
+
+    private var _binding: FragmentCarlenderBinding? = null
+    private val binding get() = _binding!!
+    private val viewmodel by viewModels<CalenderViewmodel> {
+        CalenderViewmodel.provideFactory()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_carlender, container, false)
+    ): View {
+        _binding = FragmentCarlenderBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        seyLayout()
+    }
+
+    private fun seyLayout() {
+        binding.viewmodel = viewmodel
+        binding.lifecycleOwner = viewLifecycleOwner
     }
 }

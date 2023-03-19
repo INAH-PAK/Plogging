@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UserInfoLayout">
+        <attr name="userInfoLabel" format="reference" />
+        <attr name="userProfileImage" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ParticipantsLayout">
+        <attr name="participantsLabel" format="reference" />
+        <attr name="userCount" format="integer" />
+    </declare-styleable>
+</resources>
