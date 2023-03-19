@@ -29,7 +29,9 @@
             <CalendarView
                 android:id="@+id/calender"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:onSelectedDayChange="@{viewmodel.dateChangeListener}"
+                />
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
