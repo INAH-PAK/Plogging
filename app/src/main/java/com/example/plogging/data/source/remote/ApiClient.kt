@@ -1,6 +1,7 @@
 package com.example.plogging.data.source.remote
 
 import com.example.plogging.data.model.Documents
+import com.example.plogging.data.model.TogetherRecode
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
@@ -8,8 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiClient {
 
@@ -21,6 +21,12 @@ interface ApiClient {
         @Query("query") query: String,
     ): Documents
 
+    @POST("plogging/recodes/{create_date}.json")
+    suspend fun postRecode(
+        @Path("create_date") createDate: String,
+        @Body togetherRecode: TogetherRecode
+    )
+
     companion object {
 
         private const val BASE_URL_KAKAO = "https://dapi.kakao.com/"
@@ -31,7 +37,7 @@ interface ApiClient {
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        fun createFirebaseApiClient():ApiClient{
+        fun createFirebaseApiClient(): ApiClient {
             val logger = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
