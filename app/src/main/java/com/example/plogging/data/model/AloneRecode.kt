@@ -9,13 +9,18 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "local_recodes")
-data class AloneRecode(
-    val createDate: String,
+data class AloneRecode constructor(
+    @ColumnInfo(name = "create_date") val createDate: String,
     val thumbnailImageString: String,
     @ColumnInfo(name = "tracking_time") val trackingTime: String,
     @ColumnInfo(name = "tracking_distance") val trackingDistance: String,
 ) : Parcelable {
     @PrimaryKey(autoGenerate = true)
     @IgnoredOnParcel
-    val id: Int = 0
+    var id: Long = 0
+
+    constructor(createDate: String,thumbnailImageString: String, trackingTime: String, trackingDistance: String, id:Long)
+            : this(createDate,thumbnailImageString, trackingTime,trackingDistance) {
+        this.id = id
+    }
 }
