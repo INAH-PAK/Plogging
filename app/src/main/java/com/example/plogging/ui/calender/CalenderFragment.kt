@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.plogging.PloggingApplication
+import com.example.plogging.data.source.remote.RecodeRepository
 import com.example.plogging.databinding.FragmentCarlenderBinding
 
 class CalenderFragment : Fragment() {
@@ -13,7 +15,11 @@ class CalenderFragment : Fragment() {
     private var _binding: FragmentCarlenderBinding? = null
     private val binding get() = _binding!!
     private val viewmodel by viewModels<CalenderViewmodel> {
-        CalenderViewmodel.provideFactory()
+        CalenderViewmodel.provideFactory(
+            RecodeRepository(
+                PloggingApplication.appContainer.provideAppDatabase().aloneRecordeDao()
+            )
+        )
     }
 
     override fun onCreateView(
