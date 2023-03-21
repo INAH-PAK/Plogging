@@ -94,6 +94,8 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
                         when (it) {
                             is TrackingUiState.Start -> {
                                 setTrackingStateLayout(true)
+                                WorkManager.getInstance(requireContext())
+                                    .enqueue(trackingWorkRequest)
                             }
                             is TrackingUiState.End -> {
                                 setTrackingStateLayout(false)
