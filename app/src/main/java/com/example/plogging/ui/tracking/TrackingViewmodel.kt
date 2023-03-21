@@ -42,6 +42,25 @@ class TrackingViewModel(private val repository: TrackingRepository) : ViewModel(
         }
     }
 
+    fun onClickTrackingTogether() {
+        // 함께하기 버튼 클릭시, 트래킹 시작
+        _trackingState.value = TrackingUiState.Start(
+            isTogetherMode = true
+        )
+    }
+
+    fun onClickTrackingAlone() {
+        // 나혼자 버튼 클릭. 트래킹 시작
+        _trackingState.value = TrackingUiState.Start(
+            isTogetherMode = false
+        )
+    }
+
+    fun onClickTrackingEnd() {
+        // 트래킹 종료
+        _trackingState.value = TrackingUiState.End
+    }
+
     fun onClickChipRestroom() {
         viewModelScope.launch {
             repository.getKakaoLocalApi(
