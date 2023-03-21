@@ -12,8 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.work.*
 import com.example.plogging.PloggingApplication
 import com.example.plogging.R
+import com.example.plogging.TrackingWorker
 import com.example.plogging.data.model.RestRoomMarkersUiState
 import com.example.plogging.data.source.TrackingRepository
 import com.example.plogging.databinding.FragmentTrackingBinding
@@ -22,6 +24,7 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class TrackingFragment : Fragment(), OnMapReadyCallback {
 
@@ -40,6 +43,20 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: LocationSource
 
+    private val trackingConstraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)  // 와이파이 + 네트워크
+        .build()
+    private val trackingWorkRequest: WorkRequest =
+        OneTimeWorkRequestBuilder<TrackingWorker>()
+            .setConstraints(trackingConstraints)
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR, // 10초로 설정
+                PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS,
+                TimeUnit.MILLISECONDS
+            ).addTag("TrackingWorker")
+            .build()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,31 +72,66 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewmodel.uiState.collect { uiState ->
-                    when (uiState) {
-                        is RestRoomMarkersUiState.Success<List<Marker>> -> {
-                            if (uiState.restRoomList.isEmpty()) return@collect
-                            Log.i("마커 데이터 가져오기 성공", uiState.restRoomList.toString())
-                            uiState.restRoomList.forEach {
-                                it.map = naverMap
+                launch {
+                    viewmodel.uiState.collect { uiState ->
+                        when (uiState) {
+                            is RestRoomMarkersUiState.Success<List<Marker>> -> {
+                                if (uiState.restRoomList.isEmpty()) return@collect
+                                Log.i("마커 데이터 가져오기 성공", uiState.restRoomList.toString())
+                                uiState.restRoomList.forEach {
+                                    it.map = naverMap
+                                }
+                            }
+                            is RestRoomMarkersUiState.Error<List<Marker>> -> {
+                                Snackbar.make(binding.root, uiState.message, 3000).show()
                             }
                         }
-                        is RestRoomMarkersUiState.Error<List<Marker>> -> {
-                            Snackbar.make(binding.root, uiState.message, 3000).show()
+
+                    }
+                }
+                launch {
+                    viewmodel.trackingState.collect {
+                        when (it) {
+                            is TrackingUiState.Start -> {
+                                setTrackingStateLayout(true)
+                                WorkManager.getInstance(requireContext())
+                                    .enqueue(trackingWorkRequest)
+                            }
+                            is TrackingUiState.End -> {
+                                setTrackingStateLayout(false)
+                            }
                         }
                     }
-
                 }
             }
         }
+    }
 
+    private fun setTrackingStateLayout(state: Boolean) {
+        with(binding) {
+            when (state) {
+                true -> {
+                    btnStartTogether.visibility = View.INVISIBLE
+                    btnStartAlong.visibility = View.INVISIBLE
+                    btnEnd.visibility = View.VISIBLE
+                    tvTrackingTime.visibility = View.VISIBLE
+                    tvTrackingDistance.visibility = View.VISIBLE
+                }
+                false -> {
+                    btnStartTogether.visibility = View.VISIBLE
+                    btnStartAlong.visibility = View.VISIBLE
+                    btnEnd.visibility = View.INVISIBLE
+                    tvTrackingTime.visibility = View.INVISIBLE
+                    tvTrackingDistance.visibility = View.INVISIBLE
+                }
+            }
+        }
     }
 
     private fun setLayout() {
         binding.viewmodel = viewmodel
         binding.lifecycleOwner = viewLifecycleOwner
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.naver_map) as MapFragment
         mapFragment.getMapAsync(this)
         requestPermission.launch(fusedLocationPermission)

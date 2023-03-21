@@ -93,4 +93,13 @@ dependencies {
     implementation("androidx.room:room-runtime:2.5.0")
     kapt("androidx.room:room-compiler:2.5.0")
     implementation("androidx.room:room-ktx:2.5.0")
+
+    // JetPack - WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
+
+    // Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
+
+    // Notification
+    implementation("androidx.core:core-ktx:1.9.0")
 }

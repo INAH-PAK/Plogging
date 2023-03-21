@@ -22,6 +22,9 @@ class TrackingViewModel(private val repository: TrackingRepository) : ViewModel(
     // The UI collects from this StateFlow to get its state updates
     val uiState: StateFlow<RestRoomMarkersUiState<List<Marker>>> = _restroomItemUiState
 
+    private val _trackingState = MutableStateFlow<TrackingUiState>(TrackingUiState.End)
+    val trackingState = _trackingState.asStateFlow()
+
     fun postRecode() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.postTogetherRecodes(
@@ -37,6 +40,25 @@ class TrackingViewModel(private val repository: TrackingRepository) : ViewModel(
                 )
             )
         }
+    }
+
+    fun onClickTrackingTogether() {
+        // 함께하기 버튼 클릭시, 트래킹 시작
+        _trackingState.value = TrackingUiState.Start(
+            isTogetherMode = true
+        )
+    }
+
+    fun onClickTrackingAlone() {
+        // 나혼자 버튼 클릭. 트래킹 시작
+        _trackingState.value = TrackingUiState.Start(
+            isTogetherMode = false
+        )
+    }
+
+    fun onClickTrackingEnd() {
+        // 트래킹 종료
+        _trackingState.value = TrackingUiState.End
     }
 
     fun onClickChipRestroom() {
@@ -70,4 +92,12 @@ class TrackingViewModel(private val repository: TrackingRepository) : ViewModel(
             }
         }
     }
+}
+
+sealed class TrackingUiState {
+    data class Start(
+        val isTogetherMode: Boolean
+    ) : TrackingUiState()
+
+    object End : TrackingUiState()
 }

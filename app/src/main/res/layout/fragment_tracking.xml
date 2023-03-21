@@ -82,28 +82,69 @@
             tools:layout="@layout/fragment_setting" />
 
         <Button
-            android:id="@+id/btn_together"
+            android:id="@+id/btn_start_together"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:onClick="@{()->viewmodel.onClickTrackingTogether()}"
             android:text="@string/start_plogging_together"
             android:textColor="@color/white"
             android:textSize="30sp"
-            android:onClick="@{()->viewmodel.postRecode()}"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="@id/tv_notify_1"
             app:layout_constraintStart_toStartOf="@id/tv_notify_1"
             app:layout_constraintTop_toBottomOf="@id/naver_map" />
 
         <Button
-            android:id="@+id/btn_along"
+            android:id="@+id/btn_start_along"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:onClick="@{()->viewmodel.onClickTrackingAlone()}"
             android:text="@string/start_plogging_alone"
             android:textColor="@color/white"
             android:textSize="30sp"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="@id/tv_notify_1"
             app:layout_constraintStart_toStartOf="@id/tv_notify_1"
-            app:layout_constraintTop_toBottomOf="@id/btn_together" />
+            app:layout_constraintTop_toBottomOf="@id/btn_start_together" />
 
+        <TextView
+            android:id="@+id/tv_tracking_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/tracking_time"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/tv_notify_1"
+            app:layout_constraintStart_toStartOf="@id/tv_notify_1"
+            app:layout_constraintTop_toBottomOf="@id/naver_map" />
+
+        <TextView
+            android:id="@+id/tv_tracking_distance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/tracking_time"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/tv_notify_1"
+            app:layout_constraintStart_toStartOf="@id/tv_tracking_time"
+            app:layout_constraintTop_toBottomOf="@id/tv_tracking_time" />
+
+        <Button
+            android:id="@+id/btn_end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewmodel.onClickTrackingEnd()}"
+            android:text="@string/plogging_end"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/tv_notify_1"
+            app:layout_constraintStart_toStartOf="@id/tv_notify_1"
+            app:layout_constraintTop_toBottomOf="@id/tv_tracking_distance" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

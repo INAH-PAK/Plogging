@@ -13,4 +13,8 @@ object Constants {
     const val USER_PREFERENCES_TOKEN = "user_token"
     const val USER_PREFERENCES_IMAGE = "user_photo"
     const val USER_PREFERENCES_EMAIL = "user_email"
+
+    // Notification
+    const val PLOGGING_CHANNEL_ID = "CHANNEL_PLOGGING"
+    const val PLOGGING_NOTIFICATION_ID = 10
 }
