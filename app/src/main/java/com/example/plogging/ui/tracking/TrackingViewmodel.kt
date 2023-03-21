@@ -22,6 +22,9 @@ class TrackingViewModel(private val repository: TrackingRepository) : ViewModel(
     // The UI collects from this StateFlow to get its state updates
     val uiState: StateFlow<RestRoomMarkersUiState<List<Marker>>> = _restroomItemUiState
 
+    private val _trackingState = MutableStateFlow<TrackingUiState>(TrackingUiState.End)
+    val trackingState = _trackingState.asStateFlow()
+
     fun postRecode() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.postTogetherRecodes(
@@ -70,4 +73,12 @@ class TrackingViewModel(private val repository: TrackingRepository) : ViewModel(
             }
         }
     }
+}
+
+sealed class TrackingUiState {
+    data class Start(
+        val isTogetherMode: Boolean
+    ) : TrackingUiState()
+
+    object End : TrackingUiState()
 }
