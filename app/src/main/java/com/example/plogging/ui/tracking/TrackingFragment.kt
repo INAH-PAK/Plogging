@@ -55,31 +55,64 @@ class TrackingFragment : Fragment(), OnMapReadyCallback {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewmodel.uiState.collect { uiState ->
-                    when (uiState) {
-                        is RestRoomMarkersUiState.Success<List<Marker>> -> {
-                            if (uiState.restRoomList.isEmpty()) return@collect
-                            Log.i("마커 데이터 가져오기 성공", uiState.restRoomList.toString())
-                            uiState.restRoomList.forEach {
-                                it.map = naverMap
+                launch {
+                    viewmodel.uiState.collect { uiState ->
+                        when (uiState) {
+                            is RestRoomMarkersUiState.Success<List<Marker>> -> {
+                                if (uiState.restRoomList.isEmpty()) return@collect
+                                Log.i("마커 데이터 가져오기 성공", uiState.restRoomList.toString())
+                                uiState.restRoomList.forEach {
+                                    it.map = naverMap
+                                }
+                            }
+                            is RestRoomMarkersUiState.Error<List<Marker>> -> {
+                                Snackbar.make(binding.root, uiState.message, 3000).show()
                             }
                         }
-                        is RestRoomMarkersUiState.Error<List<Marker>> -> {
-                            Snackbar.make(binding.root, uiState.message, 3000).show()
+
+                    }
+                }
+                launch {
+                    viewmodel.trackingState.collect {
+                        when (it) {
+                            is TrackingUiState.Start -> {
+                                setTrackingStateLayout(true)
+                            }
+                            is TrackingUiState.End -> {
+                                setTrackingStateLayout(false)
+                            }
                         }
                     }
-
                 }
             }
         }
+    }
 
+    private fun setTrackingStateLayout(state: Boolean) {
+        with(binding) {
+            when (state) {
+                true -> {
+                    btnStartTogether.visibility = View.INVISIBLE
+                    btnStartAlong.visibility = View.INVISIBLE
+                    btnEnd.visibility = View.VISIBLE
+                    tvTrackingTime.visibility = View.VISIBLE
+                    tvTrackingDistance.visibility = View.VISIBLE
+                }
+                false -> {
+                    btnStartTogether.visibility = View.VISIBLE
+                    btnStartAlong.visibility = View.VISIBLE
+                    btnEnd.visibility = View.INVISIBLE
+                    tvTrackingTime.visibility = View.INVISIBLE
+                    tvTrackingDistance.visibility = View.INVISIBLE
+                }
+            }
+        }
     }
 
     private fun setLayout() {
         binding.viewmodel = viewmodel
         binding.lifecycleOwner = viewLifecycleOwner
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.naver_map) as MapFragment
         mapFragment.getMapAsync(this)
         requestPermission.launch(fusedLocationPermission)
